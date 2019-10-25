@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as oauth from 'oauth';
 import qp from 'query-params';
 import '../config/env';
@@ -25,9 +25,8 @@ const client = new oauth.OAuth(
 @Injectable()
 export class TwitterApiService {
   private readonly logger = new Logger(TwitterApiService.name);
-  constructor() {}
 
-  async getPlaceId(query) {
+  async getPlaceId(query: any) {
     const places = await this.get('/geo/search', { query });
     return places.result.places[0].id;
   }

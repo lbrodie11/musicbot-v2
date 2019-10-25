@@ -3,14 +3,9 @@ import { ArtistsService } from './artists.service';
 import moment from 'moment';
 import SpotifyWebApi from 'spotify-web-api-node';
 import {
-  includes,
   find,
   size,
   toString,
-  some,
-  intersection,
-  filter,
-  has,
   indexOf,
 } from 'lodash';
 import '../config/env';
@@ -118,7 +113,7 @@ export class SpotifyService {
   ) {
     const delay = (ms: number) =>
       new Promise(resolve => setTimeout(resolve, ms));
-    let newReleases = [];
+    const newReleases = [];
     const artists = await this.artistsService.getArtists();
     const artistsSize = size(artists);
     this.logger.log(`Database currently contains ${artistsSize} artists`);

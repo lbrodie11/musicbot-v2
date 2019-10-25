@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Inject, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Artist } from '../interfaces/artists.interface';
@@ -41,7 +41,7 @@ export class ArtistsService {
     return artistNames;
   }
 
-  //Need to add these for GRAPHQL
+  // Need to add these for GRAPHQL
   // async getAlbumNames() {
   //   const artists = await this.artistModel.find().exec();
   //   const albumNames = artists.map(artist => ({

@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ArtistsModule } from './modules/artists.module';
@@ -27,7 +27,7 @@ const { DB_URL, DB_USER, DB_PASSWORD } = process.env;
       autoSchemaFile: 'schema.gql',
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client')
+      rootPath: join(__dirname, '..', 'client'),
     }),
   ],
   controllers: [AppController],
