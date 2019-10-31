@@ -1,13 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
+import puppeteer from 'puppeteer'
 require('newrelic')
 
-import puppeteer from 'puppeteer'
-
-import '../config/env';
-
 const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD } = process.env;
+
 async function getSpotifyToken() {
   const browser = await puppeteer.launch({headless: true, defaultViewport: null})
   const page = await browser.newPage()
