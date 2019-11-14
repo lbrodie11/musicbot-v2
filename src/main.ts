@@ -7,7 +7,7 @@ require('newrelic')
 const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD } = process.env;
 
 async function getSpotifyToken() {
-  const browser = await puppeteer.launch({headless: true, defaultViewport: null})
+  const browser = await puppeteer.launch({headless: true, defaultViewport: null, args: ['--no-sandbox']})
   const page = await browser.newPage()
   
   await page.goto(BASE_URL, {waitUntil: 'networkidle2'})
