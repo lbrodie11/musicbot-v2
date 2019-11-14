@@ -20,7 +20,7 @@ async function getSpotifyToken() {
   await page.type('input[name=pass]', FACEBOOK_PASSWORD)
   await page.waitFor(3000);
   await page.click('button[name=login]')
-
+  Logger.log('Logged in to Facebook');
   await browser.close()
 }
 
@@ -29,7 +29,6 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(process.env.PORT || 3000);
   Logger.log(`Server listening on port ${process.env.PORT}`);
-  getSpotifyToken()
-  Logger.log('Logged in to Facebook');
 }
 bootstrap();
+getSpotifyToken();
