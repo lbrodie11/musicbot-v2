@@ -20,7 +20,7 @@ async function getSpotifyToken() {
   await page.type('input[name=pass]', FACEBOOK_PASSWORD)
   await page.waitFor(3000);
   await page.click('button[name=login]')
-  Logger.log('Logged in to Facebook');
+  Logger.log('Logged in to Facebook from Puppeteer');
   await browser.close()
 }
 
