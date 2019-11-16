@@ -11,14 +11,14 @@ async function getSpotifyToken() {
   const page = await browser.newPage()
   
   await page.goto(BASE_URL, {waitUntil: 'networkidle2'})
-  await page.waitFor(5000);
+  await page.waitFor(6000);
   await page.click('div a.btn')
   await page.waitFor('input[name=email]');
-  await page.waitFor(5000);
+  await page.waitFor(6000);
   await page.type('input[name=email]', FACEBOOK_USERNAME)
-  await page.waitFor(5000);
+  await page.waitFor(6000);
   await page.type('input[name=pass]', FACEBOOK_PASSWORD)
-  await page.waitFor(3000);
+  await page.waitFor(4000);
   await page.click('button[name=login]')
   Logger.log('Logged in to Facebook from Puppeteer');
   await browser.close()
