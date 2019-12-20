@@ -3,30 +3,12 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
 import puppeteer from 'puppeteer-extra'
-// import fs from 'fs';
 require('newrelic')
 
 const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD } = process.env;
 
 async function getSpotifyToken() {
   puppeteer.use(pluginStealth());
-
-//   const args = [
-//     '--no-sandbox',
-//     '--disable-setuid-sandbox',
-//     '--disable-infobars',
-//     '--window-position=0,0',
-//     '--ignore-certifcate-errors',
-//     '--ignore-certifcate-errors-spki-list',
-//     '--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36"'
-// ];
-
-// const options = {
-//     args,
-//     headless: true,
-//     ignoreHTTPSErrors: true,
-//     userDataDir: './tmp',
-// };
   
   const browser = await puppeteer.launch({headless: true, defaultViewport: null, ignoreHTTPSErrors: true, args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-infobars', '--window-position=0,0', '--ignore-certifcate-errors', '--ignore-certifcate-errors-spki-list',]});
   const page = await browser.newPage()
