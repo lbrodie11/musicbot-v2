@@ -29,7 +29,7 @@ async function getSpotifyToken() {
   await page.click('button[name=login]')
   let currentCookies = await page.cookies()
 
-  fs.writeFileSync('../cookies.json', JSON.stringify(currentCookies))
+  await fs.writeFileSync('../cookies.json', JSON.stringify(currentCookies))
   
   }
   Logger.log('Logged in to Facebook from Puppeteer');
