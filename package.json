@@ -54,6 +54,8 @@
     "passport-facebook-token": "^3.3.0",
     "passport-local": "^1.0.0",
     "puppeteer": "^2.0.0",
+    "puppeteer-extra": "^3.1.7",
+    "puppeteer-extra-plugin-stealth": "^2.4.5",
     "query-params": "0.0.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
