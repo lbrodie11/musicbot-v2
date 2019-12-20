@@ -2,21 +2,34 @@ import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import puppeteer from 'puppeteer'
-const fs = require('fs');
-const cookies = require('../cookies.json')
+import fs from 'fs';
 require('newrelic')
 
 const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD } = process.env;
 
 async function getSpotifyToken() {
-  
-  const browser = await puppeteer.launch({headless: true, defaultViewport: null, args: ['--no-sandbox', '--disable-setuid-sandbox']})
-  const page = await browser.newPage()
-  if(Object.keys(cookies).length){
-    await page.setCookie(...cookies)
 
-    await page.goto(BASE_URL, {waitUntil: 'networkidle2'})
-  } else {
+  const args = [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-infobars',
+    '--window-position=0,0',
+    '--ignore-certifcate-errors',
+    '--ignore-certifcate-errors-spki-list',
+    '--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36"'
+];
+
+const options = {
+    args,
+    headless: true,
+    ignoreHTTPSErrors: true,
+    userDataDir: './tmp'
+};
+  
+  const browser = await puppeteer.launch(options);
+  const preloadFile = fs.readFileSync('./config/preload.js', 'utf8');
+  const page = await browser.newPage()
+  await page.evaluateOnNewDocument(preloadFile);
   await page.goto(BASE_URL, {waitUntil: 'networkidle2'})
   await page.waitFor(6000);
   await page.click('div a.btn')
@@ -27,11 +40,7 @@ async function getSpotifyToken() {
   await page.type('input[name=pass]', FACEBOOK_PASSWORD)
   await page.waitFor(8000);
   await page.click('button[name=login]')
-  let currentCookies = await page.cookies()
 
-  await fs.writeFileSync('../cookies.json', JSON.stringify(currentCookies))
-  
-  }
   Logger.log('Logged in to Facebook from Puppeteer');
   await browser.close()
 }
