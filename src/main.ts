@@ -2,36 +2,64 @@ import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
-import puppeteer from 'puppeteer-extra'
-require('newrelic')
+import puppeteer from 'puppeteer-extra';
+import cookies from './cookies/cookies.json';
+import * as fs from 'fs';
+require('newrelic');
 
-const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD } = process.env;
+const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD, PORT } = process.env;
 
 async function getSpotifyToken() {
   puppeteer.use(pluginStealth());
-  
-  const browser = await puppeteer.launch({headless: true, defaultViewport: null, ignoreHTTPSErrors: true, args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-infobars', '--window-position=0,0', '--ignore-certifcate-errors', '--ignore-certifcate-errors-spki-list',]});
-  const page = await browser.newPage()
-  await page.goto(BASE_URL, {waitUntil: 'networkidle2'})
-  await page.waitFor(6000);
-  await page.click('div a.btn')
-  await page.waitFor('input[name=email]');
-  await page.waitFor(10000);
-  await page.type('input[name=email]', FACEBOOK_USERNAME)
-  await page.waitFor(10000);
-  await page.type('input[name=pass]', FACEBOOK_PASSWORD)
-  await page.waitFor(8000);
-  await page.click('button[name=login]')
 
-  Logger.log('Logged in to Facebook from Puppeteer');
-  await browser.close()
+  const browser = await puppeteer.launch({
+    headless: true,
+    defaultViewport: null,
+    ignoreHTTPSErrors: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-infobars',
+      '--window-position=0,0',
+      '--ignore-certifcate-errors',
+      '--ignore-certifcate-errors-spki-list',
+    ],
+  });
+  const page = await browser.newPage();
+  
+  if (Object.keys(cookies).length) {
+    // @ts-ignore
+    await page.setCookie(...cookies);
+    await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
+    await page.goto('https://musiclackey.herokuapp.com', { waitUntil: 'networkidle0' });
+    Logger.log('Logged in to Facebook from Puppeteer from cookies');
+    await browser.close();
+  } else {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
+    await page.waitFor(7000);
+    await page.click('div a.btn');
+    await page.waitFor('input[name=email]');
+    await page.waitFor(10000);
+    await page.type('input[name=email]', FACEBOOK_USERNAME);
+    await page.waitFor(10000);
+    await page.type('input[name=pass]', FACEBOOK_PASSWORD);
+    await page.waitFor(10000);
+    await page.click('button[name=login]');
+
+    let currentCookies = await page.cookies();
+
+    fs.writeFileSync('./cookies/cookies.json', JSON.stringify(currentCookies))
+
+    Logger.log('Logged in to Facebook from Puppeteer');
+    await browser.close();
+  }
 }
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  await app.listen(process.env.PORT || 3000);
-  Logger.log(`Server listening on port ${process.env.PORT}`);
+  await app.listen(PORT || 3000);
+  Logger.log(`Server listening on port ${PORT}`);
   await getSpotifyToken();
 }
 bootstrap();

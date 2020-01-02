@@ -2,12 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import moment from 'moment';
 import SpotifyWebApi from 'spotify-web-api-node';
-import {
-  find,
-  size,
-  toString,
-  indexOf,
-} from 'lodash';
+import { find, size, toString, indexOf } from 'lodash';
 import '../config/env';
 
 interface Response<T> {

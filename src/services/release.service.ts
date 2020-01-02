@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { TwitterService } from './twitter.service';
 import { ArtistsService } from './artists.service';
 import { SpotifyService } from './spotify.service';

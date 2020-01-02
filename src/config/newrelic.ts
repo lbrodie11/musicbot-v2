@@ -1,1 +1,1 @@
-import * as newrelic from 'newrelic'
+import * as newrelic from 'newrelic';

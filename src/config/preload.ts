@@ -1,7 +1,7 @@
 // overwrite the `languages` property to use a custom getter
-Object.defineProperty(navigator, "languages", {
+Object.defineProperty(navigator, 'languages', {
   get: function() {
-    return ["en-US", "en"];
+    return ['en-US', 'en'];
   },
 });
 
@@ -13,4 +13,4 @@ Object.defineProperty(navigator, 'plugins', {
   },
 });
 
-Object.defineProperty(navigator, 'webdriver', { get: () => false, });
+Object.defineProperty(navigator, 'webdriver', { get: () => false });
