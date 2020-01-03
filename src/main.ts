@@ -3,9 +3,10 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
 import puppeteer from 'puppeteer-extra';
-import * as cookies from './cookies.json';
 import * as fs from 'fs';
+const cookies = require('./cookies.json');
 require('newrelic');
+
 
 const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD, PORT } = process.env;
 
@@ -32,8 +33,8 @@ async function getSpotifyToken() {
   if (Object.keys(cookies).length) {
     Logger.log('Setting cookies');
     Logger.log(cookies)
-    // @ts-ignore
     await page.setCookie(...cookies);
+    Logger.log(cookies)
     Logger.log(`Going to ${BASE_URL} using Puppeteer Cookies`);
     await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
     await page.goto('https://musiclackey.herokuapp.com', { waitUntil: 'networkidle0' });
