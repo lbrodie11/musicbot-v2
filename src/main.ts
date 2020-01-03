@@ -3,13 +3,14 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
 import puppeteer from 'puppeteer-extra';
-import cookies from './cookies.json';
+import * as cookies from './cookies.json';
 import * as fs from 'fs';
 require('newrelic');
 
 const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD, PORT } = process.env;
 
 async function getSpotifyToken() {
+  Logger.log('Trying to login in to Facebook from Puppeteer');
   puppeteer.use(pluginStealth());
 
   const browser = await puppeteer.launch({
