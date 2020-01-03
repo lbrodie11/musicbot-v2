@@ -31,8 +31,10 @@ async function getSpotifyToken() {
   
   if (Object.keys(cookies).length) {
     Logger.log('Setting cookies');
+    Logger.log(cookies)
     // @ts-ignore
     await page.setCookie(...cookies);
+    Logger.log(`Going to ${BASE_URL} using Puppeteer Cookies`);
     await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
     await page.goto('https://musiclackey.herokuapp.com', { waitUntil: 'networkidle0' });
     Logger.log('Logged in to Facebook from Puppeteer from cookies');
