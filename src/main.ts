@@ -10,7 +10,7 @@ require('newrelic');
 const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD, PORT } = process.env;
 
 async function getSpotifyToken() {
-  Logger.log('Trying to login in to Facebook from Puppeteer');
+  Logger.log('Trying to login to Facebook from Puppeteer');
   puppeteer.use(pluginStealth());
 
   const browser = await puppeteer.launch({
@@ -27,8 +27,10 @@ async function getSpotifyToken() {
     ],
   });
   const page = await browser.newPage();
+  Logger.log('Opened new page in Puppeteer');
   
   if (Object.keys(cookies).length) {
+    Logger.log('Setting cookies');
     // @ts-ignore
     await page.setCookie(...cookies);
     await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
@@ -36,6 +38,7 @@ async function getSpotifyToken() {
     Logger.log('Logged in to Facebook from Puppeteer from cookies');
     await browser.close();
   } else {
+    Logger.log(`Going to ${BASE_URL} using Puppeteer`);
     await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
     await page.waitFor(7000);
     await page.click('div a.btn');
