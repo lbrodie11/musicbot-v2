@@ -4,7 +4,8 @@ import { AppModule } from './app.module';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
 import puppeteer from 'puppeteer-extra';
 import * as fs from 'fs';
-const cookies = require('./cookies.json');
+import { resolve } from 'path';
+// import cookies from './cookies.json';
 require('newrelic');
 
 
@@ -15,6 +16,7 @@ async function getSpotifyToken() {
   puppeteer.use(pluginStealth());
 
   const browser = await puppeteer.launch({
+    userDataDir: resolve('user_data'),
     headless: true,
     defaultViewport: null,
     ignoreHTTPSErrors: true,
@@ -30,17 +32,20 @@ async function getSpotifyToken() {
   const page = await browser.newPage();
   Logger.log('Opened new page in Puppeteer');
   
-  if (Object.keys(cookies).length) {
-    Logger.log('Setting cookies');
-    Logger.log(cookies)
-    await page.setCookie(...cookies);
-    Logger.log(cookies)
-    Logger.log(`Going to ${BASE_URL} using Puppeteer Cookies`);
-    await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
-    await page.goto('https://musiclackey.herokuapp.com', { waitUntil: 'networkidle0' });
-    Logger.log('Logged in to Facebook from Puppeteer from cookies');
-    await browser.close();
-  } else {
+  // if (Object.keys(cookies).length) {
+  //   Logger.log('Setting cookies');
+  //   Logger.log(cookies)
+  //   const cookiesString = await fs.readFile('./cookies.json', );
+  //   const cookies = JSON.parse(cookiesString);
+  //   await page.setCookie(...cookies)
+  //   await page.setCookie(...cookies);
+  //   Logger.log(cookies)
+  //   Logger.log(`Going to ${BASE_URL} using Puppeteer Cookies`);
+  //   await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
+  //   await page.goto('https://musiclackey.herokuapp.com', { waitUntil: 'networkidle0' });
+  //   Logger.log('Logged in to Facebook from Puppeteer from cookies');
+  //   await browser.close();
+  // } else {
     Logger.log(`Going to ${BASE_URL} using Puppeteer`);
     await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
     await page.waitFor(7000);
@@ -53,13 +58,13 @@ async function getSpotifyToken() {
     await page.waitFor(10000);
     await page.click('button[name=login]');
 
-    let currentCookies = await page.cookies();
+    // let currentCookies = await page.cookies();
 
-    fs.writeFileSync('./cookies.json', JSON.stringify(currentCookies))
+    // fs.writeFileSync('./cookies.json', JSON.stringify(currentCookies))
 
     Logger.log('Logged in to Facebook from Puppeteer');
     await browser.close();
-  }
+  // }
 }
 
 async function bootstrap() {
