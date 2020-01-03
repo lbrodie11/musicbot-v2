@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
 import puppeteer from 'puppeteer-extra';
-import cookies from './cookies/cookies.json';
+import cookies from './cookies.json';
 import * as fs from 'fs';
 require('newrelic');
 
@@ -48,7 +48,7 @@ async function getSpotifyToken() {
 
     let currentCookies = await page.cookies();
 
-    fs.writeFileSync('./cookies/cookies.json', JSON.stringify(currentCookies))
+    fs.writeFileSync('./cookies.json', JSON.stringify(currentCookies))
 
     Logger.log('Logged in to Facebook from Puppeteer');
     await browser.close();
