@@ -72,6 +72,6 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(PORT || 3000);
   Logger.log(`Server listening on port ${PORT}`);
-  await getSpotifyToken();
+  // await getSpotifyToken();
 }
 bootstrap();
