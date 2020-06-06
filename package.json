@@ -37,7 +37,7 @@
     "@types/passport-facebook-token": "^0.4.33",
     "@types/puppeteer": "^1.20.2",
     "apify": "^0.17.0",
-    "apollo-server-express": "^2.9.6",
+    "apollo-server-express": "^2.14.2",
     "concurrently": "^5.0.0",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
