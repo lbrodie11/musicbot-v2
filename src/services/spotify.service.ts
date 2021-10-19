@@ -36,7 +36,7 @@ export class SpotifyService {
         this.logger.log('Could not refresh access token', err);
       }
     }
-    return new Promise(r => r());
+    return new Promise<void>(r => r());
   }
 
   async setAccessToken(token: any) {

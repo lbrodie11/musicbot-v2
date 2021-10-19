@@ -22,7 +22,8 @@ export class AppService {
   async callback(req: Request, res: Response) {
     const schedule = '*/50 * * * *';
     try {
-      const retData = await this.spotify.authorizationCodeGrant(req.query.code);
+      const authCodeGrant:any = req?.query?.code
+      const retData = await this.spotify.authorizationCodeGrant(authCodeGrant);
       const {
         access_token: accessToken,
         refresh_token: refreshToken,
