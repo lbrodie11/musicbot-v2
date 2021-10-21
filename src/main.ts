@@ -10,7 +10,7 @@ import { resolve } from 'path';
 
 
 
-const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD, PORT } = process.env;
+const { BASE_URL, FACEBOOK_USERNAME, FACEBOOK_PASSWORD, PORT, DB_URL, DB_USER, DB_PASSWORD } = process.env;
 
 async function getSpotifyToken() {
   Logger.log('Trying to login to Spotify from Puppeteer');
@@ -70,6 +70,7 @@ async function getSpotifyToken() {
 }
 
 async function bootstrap() {
+  console.log(DB_URL, DB_USER, DB_PASSWORD)
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   await app.listen(PORT || 3000);

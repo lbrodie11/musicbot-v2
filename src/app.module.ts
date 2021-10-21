@@ -18,7 +18,7 @@ const { DB_URL, DB_USER, DB_PASSWORD } = process.env;
   imports: [
     AuthModule,
     ArtistsModule,
-    MongooseModule.forRoot(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URL}`, {
+    MongooseModule.forRoot(`mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_URL}?retryWrites=true&w=majority`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
