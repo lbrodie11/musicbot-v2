@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ArtistsService } from './artists.service';
+import { ArtistService } from '../artist/artist.service';
 import moment from 'moment';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { find, size, toString, indexOf } from 'lodash';
@@ -15,7 +15,7 @@ interface Response<T> {
 export class SpotifyService {
   private spotifyApi: SpotifyWebApi;
   private readonly logger = new Logger(SpotifyService.name);
-  constructor(private readonly artistsService: ArtistsService) {
+  constructor(private readonly artistsService: ArtistService) {
     this.spotifyApi = new SpotifyWebApi({
       clientId: `${process.env.SPOTIFY_CLIENT_ID}`,
       clientSecret: `${process.env.SPOTIFY_CLIENT_SECRET}`,
@@ -105,9 +105,10 @@ export class SpotifyService {
     artistIds: any,
     artistsNames: string[] | ArrayLike<string>,
     albumNames: any,
+    albumIds: any
   ) {
     const delay = (ms: number) =>
-      new Promise(resolve => setTimeout(resolve, ms));
+    new Promise(resolve => setTimeout(resolve, ms));
     const newReleases = [];
     const artists = await this.artistsService.getArtists();
     const artistsSize = size(artists);
@@ -115,6 +116,7 @@ export class SpotifyService {
     for (let i = 0; i < artistIds.length; i++) {
       const artistAlbum = await this.getArtistAlbums(artistIds[i]);
       const date = await artistAlbum.body.items[0].release_date;
+      const artistAlbumId = await artistAlbum.body.items[0].id
       const artistName = await artistAlbum.body.items[0].artists[0].name;
       const artistAlbumName = await artistAlbum.body.items[0].name;
       const releaseDate = new Date(date);
@@ -122,25 +124,27 @@ export class SpotifyService {
       await delay(1000);
       if (
         releaseDate >= currentDate &&
-        indexOf(artistsNames, artistName) <= -1
+        indexOf(artistIds, artistIds[i]) <= -1
+        // indexOf(artistsNames, artistName) <= -1
       ) {
         this.logger.log(
           `Adding New Artist & New Album:  ${toString(artistAlbum)} `,
         );
         newReleases.push(artistAlbum);
-        await this.artistsService.insertArtist(artistName, artistAlbumName);
+        // await this.artistsService.insertArtist(artistName, artistAlbumName);
       } else if (
         releaseDate >= currentDate &&
-        find(albumNames, el => el[0] === artistAlbumName) === undefined
+        // find(albumNames, el => el[0] === artistAlbumName) === undefined
+        find(albumIds, el => el[0] === artistAlbumId) === undefined
       ) {
         this.logger.log(
           `Adding new Album to Database:  ${toString(artistAlbumName)}`,
         );
         newReleases.push(artistAlbum);
-        await this.artistsService.updateArtistAlbums(
-          artistName,
-          artistAlbumName,
-        );
+        // await this.artistsService.updateArtistAlbums(
+        //   artistName,
+        //   artistAlbumName,
+        // );
       }
     }
     this.logger.log(`There are ${size(newReleases)} new releases`);

@@ -64,17 +64,16 @@ async function getSpotifyToken() {
 
     // fs.writeFileSync('./cookies.json', JSON.stringify(currentCookies))
 
-    Logger.log('Logged in to Facebook from Puppeteer');
+    Logger.log('Logged in to Spotify from Puppeteer');
     await browser.close();
   // }
 }
 
 async function bootstrap() {
-  console.log(DB_URL, DB_USER, DB_PASSWORD)
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   await app.listen(PORT || 3000);
   Logger.log(`Server listening on port ${PORT}`);
-  await getSpotifyToken();
+  // await getSpotifyToken();
 }
 bootstrap();

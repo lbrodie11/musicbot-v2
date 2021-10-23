@@ -10,6 +10,10 @@ export class AppService {
     private readonly spotify: SpotifyService,
   ) {}
 
+  getHello(): string {
+    return 'Hello World!';
+  }
+
   async login(req: Request, res: Response) {
     const stateKey = 'spotify_auth_state';
     const state = this.randomString(16);

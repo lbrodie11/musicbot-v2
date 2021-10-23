@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ArtistsModule } from './modules/artists.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { ArtistModule } from './artist/artist.module';
+import { AlbumModule } from './album/album.module'
+// import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ReleaseService } from './services/release.service';
@@ -12,23 +13,25 @@ import { TwitterApiService } from './services/twitter.api.service';
 import { AppService } from './app.service';
 import { join } from 'path';
 import './config/env';
+import { AlbumResolver } from './album/album.resolver';
 const { DB_URL, DB_USER, DB_PASSWORD } = process.env;
 
 @Module({
   imports: [
-    AuthModule,
-    ArtistsModule,
+    // AuthModule,
     MongooseModule.forRoot(`mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_URL}?retryWrites=true&w=majority`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: false,
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
+      playground: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
+    ArtistModule,
+    AlbumModule,
   ],
   controllers: [AppController],
   providers: [
@@ -36,7 +39,7 @@ const { DB_URL, DB_USER, DB_PASSWORD } = process.env;
     SpotifyService,
     TwitterService,
     TwitterApiService,
-    AppService,
+    AppService
   ],
 })
 export class AppModule {}
