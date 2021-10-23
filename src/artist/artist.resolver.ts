@@ -1,34 +1,37 @@
 import { Resolver, Query, Args, Mutation, ResolveField, Parent } from '@nestjs/graphql';
-import { ArtistType } from './artist.schema';
-import { CreateArtistInput } from './artist.schema'
+import { Artist } from './artist.schema';
+import { CreateArtistInput, UpdateArtistAlbumInput } from './artist.schema'
 import { ArtistService } from './artist.service';
-import { AlbumService } from '../album/album.service';
 
-@Resolver(() => ArtistType)
+@Resolver(() => Artist)
 export class ArtistsResolver {
   constructor(
-    private artistService: ArtistService, 
-    private albumService: AlbumService
-  ) {}
+    private artistService: ArtistService
+  ) { }
 
-  @Query(() => [ArtistType])
-  async artists(): Promise<ArtistType[]> {
-    console.log(await this.artistService.findMany())
-    return await this.artistService.findMany();
+  @Query(() => [Artist])
+  async artists(): Promise<Artist[]> {
+    return await this.artistService.getArtists();
   }
 
-  @Query(() => ArtistType)
-  async artist(@Args('artistName', { type: () => String }) artistName: string) {
-    return await this.artistService.getSingleArtist(artistName);
+  @Query(() => Artist)
+  async artist(@Args('artistId', { type: () => String }) artistId: string) {
+    return await this.artistService.findById(artistId);
   }
 
-  @Mutation(() => ArtistType)
+  @Query()
+  async artistsCount() {
+    return await this.artistService.getArtistsCount();
+  }
+
+  @Mutation(() => Artist)
   async createArtist(@Args('input') input: CreateArtistInput) {
     return this.artistService.createArtist(input)
   }
 
-  @ResolveField()
-  async albums(@Parent() parent: ArtistType) {
-    return this.albumService.findByArtistId(parent._id);
+  @Mutation(() => Artist)
+  async updateArtistAlbum(@Args('artistId') artistId: string,
+    @Args('input') input: UpdateArtistAlbumInput) {
+    return this.artistService.updateArtistAlbum(input, artistId)
   }
 }

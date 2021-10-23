@@ -1,40 +1,41 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ArtistType, ArtistDocument } from './artist.schema';
+import { Artist, ArtistDocument, UpdateArtistAlbumInput, CreateArtistInput } from './artist.schema';
 
 @Injectable()
 export class ArtistService {
   private readonly logger = new Logger(ArtistService.name);
   constructor(
-    @InjectModel(ArtistType.name) private artistModel: Model<ArtistDocument>,
-  ) {}
+    @InjectModel(Artist.name) private artistModel: Model<ArtistDocument>,
+  ) { }
 
-  async findById(id) {
+
+  // Queries
+
+  async findById(id: string) {
     return this.artistModel.findById(id).lean();
   }
 
-  async findMany() {
+  async getArtists() {
     return this.artistModel.find().lean();
   }
 
-  async createArtist(input) {
+
+  // Mutations
+
+  async createArtist(input: CreateArtistInput) {
     return this.artistModel.create(input)
   }
 
-
-  async findByArtistId(artistId) {
-    return this.artistModel.find({ artist: artistId });
+  async updateArtistAlbum(input: UpdateArtistAlbumInput, artistId: string) {
+    const { albumName, albumId } = input
+    return await this.artistModel
+      .findOneAndUpdate({ artistId }, { albumName, albumId }, { new: true })
+      .exec();
   }
 
-  async getArtists() {
-    const artists = await this.artistModel.find().exec();
-    return artists.map(artist => ({
-      id: artist._id,
-      artistName: artist.name,
-      albums: artist.albums,
-    }));
-  }
+
 
   async getArtistsCount(): Promise<any> {
     await this.artistModel.countDocuments();
@@ -42,13 +43,13 @@ export class ArtistService {
 
   async getAlbumNames() {
     const artists = await this.artistModel.find().exec();
-    const albumNames = artists.map(artist => artist.albums);
+    const albumNames = artists.map(artist => artist.albumName);
     return albumNames;
   }
 
   async getAlbumIds() {
     const artists = await this.artistModel.find().exec();
-    const albumIds = artists.map(artist => artist.albums); /// Figure out how to get album ids
+    const albumIds = artists.map(artist => artist.albumId); /// Figure out how to get album ids
     return albumIds;
   }
 
@@ -63,35 +64,31 @@ export class ArtistService {
   //   return artistNames;
   // }
 
-  // Need to add these for GRAPHQL
-  // async getAlbumNames() {
-  //   const artists = await this.artistModel.find().exec();
-  //   const albumNames = artists.map(artist => ({
-  //     albums: artist.albums,
-  //   }));
-  //   return albumNames;
-  // }
+  async getArtistNames() {
+    const artists = await this.artistModel.find().exec();
+    const artistNames = artists.map(artist => ({
+      artistName: artist.artistName,
+    }));
+    return artistNames;
+  }
 
-  // async getArtistNames() {
-  //   const artists = await this.artistModel.find().exec();
-  //   const artistNames = artists.map(artist => ({
-  //     artistName: artist.artistName,
-  //   }));
-  //   return artistNames;
-  // }
+  async getArtistIds() {
+    const artists = await this.artistModel.find().exec();
+    const artistIds = artists.map(artist => artist.artistId);
+    return artistIds;
+  }
 
-  async getSingleArtist(artistName: string) {
-    const artist = await this.findArtist(artistName);
+  async getSingleArtist(artistId: string) {
+    const artist = await this.findArtist(artistId);
     return {
-      id: artist.id,
-      artistName: artist.name,
-      albums: artist.albums,
+      artistId: artist.artistId,
+      artistName: artist.artistName,
+      albumId: artist.albumId,
+      albumName: artist.albumName,
     };
   }
 
-  // async updateArtistAlbums(artistName: string, albums: [string]) {
-  //   this.findArtistAndUpdate(artistName, albums);
-  // }
+
 
   async deleteArtist(artistName: string) {
     this.removeArtist(artistName);
@@ -124,10 +121,10 @@ export class ArtistService {
   // }
 
   // helper functions
-  private async findArtist(artistName: string): Promise<ArtistDocument> {
+  private async findArtist(artistId: string): Promise<ArtistDocument> {
     let artist;
     try {
-      artist = await this.artistModel.findOne({ artistName }).exec();
+      artist = await this.artistModel.findOne({ artistId }).exec();
     } catch (error) {
       throw new NotFoundException('Could not find Artist');
     }
@@ -137,16 +134,18 @@ export class ArtistService {
     return artist;
   }
 
-  // private async findArtistAndUpdate(artistName: string, albums: [string]) {
+  // private async findArtistAndUpdate(artistId, albumId, albumName) {
   //   const updatedArtist = await this.artistModel
-  //     .findOneAndUpdate({ artistName }, { albums }, { new: true })
+  //     .findOneAndUpdate({ artistId }, { albumId, albumName }, { new: true })
   //     .exec();
-  //   if (artistName) {
-  //     updatedArtist.name = artistName;
-  //   }
-  //   if (albums) {
-  //     updatedArtist.albums = albums;
-  //   }
+  //   // if (artistId) {
+  //   //   updatedArtist.artistName = artistName;
+  //   //   updatedArtist.artistId = artistId
+  //   // }
+  //   // if (albumId) {
+  //   //   updatedArtist.albumName = albumName;
+  //   //   updatedArtist.albumId = albumId;
+  //   // }
   //   updatedArtist.save();
   // }
 

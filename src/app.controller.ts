@@ -6,11 +6,6 @@ import { Request, Response } from 'express';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
   @Get('/login')
   async login(@Req() req: Request, @Res() res: Response) {
     return this.appService.login(req, res);

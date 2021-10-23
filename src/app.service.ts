@@ -10,10 +10,6 @@ export class AppService {
     private readonly spotify: SpotifyService,
   ) {}
 
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   async login(req: Request, res: Response) {
     const stateKey = 'spotify_auth_state';
     const state = this.randomString(16);
@@ -36,7 +32,7 @@ export class AppService {
 
       this.spotify.setAccessToken(accessToken);
       this.spotify.setRefreshToken(refreshToken);
-      this.releaseService.runReleaseWatcher(schedule);
+      // this.releaseService.runReleaseWatcher(schedule);
 
       return res.redirect('/');
     } catch (err) {

@@ -2,43 +2,33 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AlbumType {
+type Artist {
   _id: ID!
+  artistName: String
+  artistId: String!
   albumName: String!
-  albumID: String!
-  artist: ArtistType!
-}
-
-type ArtistType {
-  _id: ID!
-  name: String
-  artistID: String!
-  albums: [AlbumType!]!
+  albumId: String!
 }
 
 type Query {
-  artists: [ArtistType!]!
-  artist(artistName: String!): ArtistType!
-  albums: [AlbumType!]!
-  album(input: FindAlbumInput!): AlbumType!
-}
-
-input FindAlbumInput {
-  _id: String!
+  artists: [Artist!]!
+  artist(artistId: String!): Artist!
+  artistsCount: Artist!
 }
 
 type Mutation {
-  createArtist(input: CreateArtistInput!): ArtistType!
-  createAlbum(input: CreateAlbumInput!): AlbumType
+  createArtist(input: CreateArtistInput!): Artist!
+  updateArtistAlbum(input: UpdateArtistAlbumInput!, artistId: String!): Artist!
 }
 
 input CreateArtistInput {
-  name: String!
-  artistID: String!
+  artistName: String!
+  artistId: String!
+  albumName: String!
+  albumId: String!
 }
 
-input CreateAlbumInput {
+input UpdateArtistAlbumInput {
   albumName: String!
-  artist: String!
-  albumID: String!
+  albumId: String!
 }

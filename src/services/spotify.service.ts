@@ -3,7 +3,6 @@ import { ArtistService } from '../artist/artist.service';
 import moment from 'moment';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { find, size, toString, indexOf } from 'lodash';
-import '../config/env';
 
 interface Response<T> {
   body: T;
@@ -103,9 +102,8 @@ export class SpotifyService {
 
   async getNewReleases(
     artistIds: any,
-    artistsNames: string[] | ArrayLike<string>,
-    albumNames: any,
-    albumIds: any
+    albumIds: any,
+    dBArtistIds: any
   ) {
     const delay = (ms: number) =>
     new Promise(resolve => setTimeout(resolve, ms));
@@ -116,35 +114,44 @@ export class SpotifyService {
     for (let i = 0; i < artistIds.length; i++) {
       const artistAlbum = await this.getArtistAlbums(artistIds[i]);
       const date = await artistAlbum.body.items[0].release_date;
-      const artistAlbumId = await artistAlbum.body.items[0].id
+      const albumId = await artistAlbum.body.items[0].id
       const artistName = await artistAlbum.body.items[0].artists[0].name;
-      const artistAlbumName = await artistAlbum.body.items[0].name;
+      const albumName = await artistAlbum.body.items[0].name;
       const releaseDate = new Date(date);
       const currentDate = new Date('2019-10-19');
       await delay(1000);
       if (
         releaseDate >= currentDate &&
-        indexOf(artistIds, artistIds[i]) <= -1
+        indexOf(dBArtistIds, artistIds[i]) === -1
         // indexOf(artistsNames, artistName) <= -1
       ) {
         this.logger.log(
           `Adding New Artist & New Album:  ${toString(artistAlbum)} `,
         );
+        const artistId = artistIds[i]
+        const input = {
+          artistId,
+          albumId, 
+          albumName,
+          artistName
+        }
+        await this.artistsService.createArtist(input);
         newReleases.push(artistAlbum);
-        // await this.artistsService.insertArtist(artistName, artistAlbumName);
       } else if (
         releaseDate >= currentDate &&
         // find(albumNames, el => el[0] === artistAlbumName) === undefined
-        find(albumIds, el => el[0] === artistAlbumId) === undefined
+        // find(albumIds, el => el[0] === albumId) === undefined
+        indexOf(albumIds, albumId) === -1
       ) {
         this.logger.log(
-          `Adding new Album to Database:  ${toString(artistAlbumName)}`,
+          `Adding new Album to Database: ${toString(albumName)} by ${toString(artistName)}`,
         );
-        newReleases.push(artistAlbum);
-        // await this.artistsService.updateArtistAlbums(
+        // await this.artistsService.updateArtistAlbum(
         //   artistName,
         //   artistAlbumName,
+        //   albumIds[1]
         // );
+        newReleases.push(artistAlbum);
       }
     }
     this.logger.log(`There are ${size(newReleases)} new releases`);
