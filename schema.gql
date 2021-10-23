@@ -13,7 +13,6 @@ type Artist {
 type Query {
   artists: [Artist!]!
   artist(artistId: String!): Artist!
-  artistsCount: Artist!
 }
 
 type Mutation {

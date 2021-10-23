@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ArtistsController } from '../controllers/artists.controller';
+import { ArtistsController } from './artists.controller';
 import { ArtistService } from './artist.service';
 import { TwitterApiService } from '../services/twitter.api.service';
 import { Artist, ArtistSchema } from './artist.schema';
@@ -24,4 +24,4 @@ import { TwitterService } from '../services/twitter.service';
   ],
   exports: [ArtistService]
 })
-export class ArtistModule {}
+export class ArtistModule { }

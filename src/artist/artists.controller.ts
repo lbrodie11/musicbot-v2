@@ -1,9 +1,9 @@
 import { Controller, Post, Body, Get, Patch, Delete } from '@nestjs/common';
-import { ArtistService } from '../artist/artist.service';
+import { ArtistService } from './artist.service';
 
 @Controller('artists')
 export class ArtistsController {
-  constructor(private readonly artistsService: ArtistService) {}
+  constructor(private readonly artistsService: ArtistService) { }
 
   // @Post()
   // async addArtist(
@@ -23,9 +23,9 @@ export class ArtistsController {
     return products;
   }
 
-  @Get(':artistName')
-  async getArtist(@Body('artistName') artistName: string) {
-    return await this.artistsService.getSingleArtist(artistName);
+  @Get(':artistId')
+  async getArtist(@Body('artistName') artistId: string) {
+    return await this.artistsService.findById(artistId);
   }
 
   // @Patch(':artistName')
@@ -38,8 +38,8 @@ export class ArtistsController {
   // }
 
   @Delete(':artistName')
-  async removeArtist(@Body('artistName') artistName: string) {
-    await this.artistsService.deleteArtist(artistName);
+  async removeArtist(@Body('artistName') artistId: string) {
+    await this.artistsService.removeArtist(artistId);
     return null;
   }
 }

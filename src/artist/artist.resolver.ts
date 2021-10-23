@@ -19,11 +19,6 @@ export class ArtistsResolver {
     return await this.artistService.findById(artistId);
   }
 
-  @Query()
-  async artistsCount() {
-    return await this.artistService.getArtistsCount();
-  }
-
   @Mutation(() => Artist)
   async createArtist(@Args('input') input: CreateArtistInput) {
     return this.artistService.createArtist(input)
