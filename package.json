@@ -47,7 +47,7 @@
     "graphql": "^15.6.1",
     "graphql-tools": "^8.2.0",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.0.12",
     "nest-puppeteer": "^1.1.1",
     "nest-winston": "^1.1.2",
